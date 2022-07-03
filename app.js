@@ -1,37 +1,38 @@
 const express = require("express");
-
+const mongoose = require("mongoose");
+const blogRoutes = require("./routes/blogRoutes");
 const app = express();
 
+// middleware
 app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('public'))
+//mongo db
+const dbUri =
+  "mongodb+srv://vipulpathak113:2Uaioro6WzJtsaa5@blog-db.99a22rn.mongodb.net/db-blog?retryWrites=true&w=majority";
+
+mongoose
+  .connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then((result) => {
+    console.log("connected to mongo db");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 app.listen(3005);
 
+// Routes
+
 app.get("/", (req, res) => {
-  const blogs = [
-    {
-      title: "Yoshi finds eggs",
-      snippet: "Lorem ipsum dolor sit amet consectetur",
-    },
-    {
-      title: "Mario finds stars",
-      snippet: "Lorem ipsum dolor sit amet consectetur",
-    },
-    {
-      title: "How to defeat bowser",
-      snippet: "Lorem ipsum dolor sit amet consectetur",
-    },
-  ];
-  res.render("index", { title: "Home", blogs });
+  res.redirect("/blogs");
 });
+
+app.use("/blogs", blogRoutes);
 
 app.get("/about", (req, res) => {
   res.render("about", { title: "About" });
-});
-
-app.get("/blogs/create", (req, res) => {
-  res.render("create", { title: "Create a new Blog" });
 });
 
 app.use((req, res) => {
