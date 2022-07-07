@@ -110,3 +110,7 @@
       font-size: 1.2em;
       cursor: pointer;
     }
+
+    .nav-link li a:active{
+color: blue;
+    }
